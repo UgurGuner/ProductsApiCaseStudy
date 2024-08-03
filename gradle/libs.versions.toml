@@ -1,0 +1,59 @@
+[versions]
+agp = "8.5.1"
+kotlin = "2.0.0"
+coreKtx = "1.13.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+lifecycleViewmodelKtx = "2.8.4"
+material = "1.12.0"
+constraintlayout = "2.1.4"
+navigationFragmentKtx = "2.7.7"
+navigationUiKtx = "2.7.7"
+ktlint = "12.1.0"
+mockito = "5.11.0"
+mockitoKotlin = "5.2.1"
+retrofit = "2.9.0"
+ksp = "2.0.0-1.0.21"
+roomKtx = "2.6.1"
+hilt = "2.51.1"
+hiltNavFragment = "1.2.0"
+glide = "4.16.0"
+shimmer = "0.5.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hiltCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hiltNavFragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavFragment" }
+#UnitTesting
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockitoKotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hiltPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+[bundles]
+unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin"]
+
