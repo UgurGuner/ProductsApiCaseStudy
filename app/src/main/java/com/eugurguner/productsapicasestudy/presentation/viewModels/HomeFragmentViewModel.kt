@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ class HomeFragmentViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private val _badgeCount: MutableStateFlow<Int> = MutableStateFlow(0)
+    val badgeCount = _badgeCount.asStateFlow()
 
     fun fetchProducts() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,6 +48,8 @@ class HomeFragmentViewModel @Inject constructor(
             } else {
                 productUseCases.saveProductUseCase.invoke(product = product)
             }
+            val savedProductCount = productUseCases.getSavedProductsUseCase.invoke().count()
+            _badgeCount.update { savedProductCount }
         }
     }
 }

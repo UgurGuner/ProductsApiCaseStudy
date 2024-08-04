@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.navHostFragment)
         binding.bottomNavigationView.setupWithNavController(navController)
         this.selectedTab = binding.bottomNavigationView.selectedItemId
+        createBadge()
         setBadgeObserver()
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
 
@@ -69,14 +70,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun createBadge() {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
+        badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
+        badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
+    }
+
     private fun setBadgeObserver() {
         viewModel.badgeCount.observe(this) { count ->
-            val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
-            badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
-            badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
-            badge.isVisible = count > 0
-            badge.number = count
+            updateBadge(count = count)
         }
+        viewModel.updateBadgeCountAtStart()
+    }
+
+    private fun updateBadge(count: Int) {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
+        badge.isVisible = count > 0
+        badge.number = count
     }
 
     private val onBackPressedCallback =

@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -17,6 +19,7 @@ import com.eugurguner.productsapicasestudy.databinding.FragmentHomeBinding
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.presentation.adapters.product.ProductAdapter
 import com.eugurguner.productsapicasestudy.presentation.viewModels.HomeFragmentViewModel
+import com.eugurguner.productsapicasestudy.presentation.viewModels.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,6 +29,7 @@ class HomeFragment : Fragment() {
     private var adapter: ProductAdapter? = null
 
     private val viewModel: HomeFragmentViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,9 +80,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun viewModelListener() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                handleUiState(uiState)
+        lifecycleScope.launch {
+            launch {
+                viewModel.badgeCount.collect { count ->
+                    mainActivityViewModel.updateBadgeCountAfterSaveRemoveOperation(count = count)
+                }
+            }
+            launch {
+                viewModel.uiState.collect { uiState ->
+                    handleUiState(uiState)
+                }
             }
         }
         viewModel.fetchProducts()
