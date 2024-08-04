@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -18,6 +21,21 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Room db schema location
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
+        val secureProps = Properties()
+        if (file("../secure.properties").exists()) {
+            file("../secure.properties").let { secureProps.load(FileInputStream(it)) }
+        }
+        buildConfigField(
+            "String",
+            "API_URL",
+            (secureProps.getProperty("API_URL") ?: "\"\"")
+        )
     }
 
     buildTypes {
@@ -37,6 +55,7 @@ android {
         jvmTarget = "17"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -47,6 +66,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.fragment)
 
     // Api Request and Fetch
     implementation(libs.retrofit)
@@ -54,8 +74,8 @@ dependencies {
 
     // Room for local storage management
     implementation(libs.androidx.room.ktx)
-    annotationProcessor(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
     // Dagger Hilt for dependency injection
     implementation(libs.hiltAndroid)

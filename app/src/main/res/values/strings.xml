@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ProductsApiCaseStudy</string>
+    <string name="tab1">Home</string>
+    <string name="tab2">Cart</string>
+    <string name="tab3">Favorites</string>
+    <string name="tab4">User</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="e_market">E-Market</string>
 </resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay.App.BottomNavigationView.Badge" parent="">
+        <item name="badgeTextColor">@color/white</item>
+        <item name="backgroundColor">@color/badgeRed</item>
+        <item name="badgeGravity">TOP_END</item>
+    </style>
+
+    <style name="SB12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="R12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="SB14">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="R14">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="SB16">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="R16">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="SB20">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="R20">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/lightGray</item>
+    </style>
+</resources>

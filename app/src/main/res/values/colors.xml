@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="soft_gray">#908D8D</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="accentColor">#2A59FE</color>
+    <color name="badgeRed">#F90000</color>
+    <color name="lightGray">#EEEEEE</color>
 </resources>
