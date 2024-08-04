@@ -14,18 +14,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeFragmentViewModel @Inject constructor(
+class FavoritesFragmentViewModel @Inject constructor(
     private val productUseCases: ProductUseCases,
     private val cartProductUseCases: CartProductUseCases
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    fun fetchProducts() {
+    fun getFavoriteProducts() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = UIState.Loading
             try {
-                val products = productUseCases.fetchProductsUseCase.invoke()
+                val products = productUseCases.getSavedProductsUseCase.invoke()
                 if (products.isEmpty()) {
                     _uiState.value = UIState.Empty
                 } else {

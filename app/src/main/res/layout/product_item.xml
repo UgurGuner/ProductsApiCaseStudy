@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/imgProduct"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitXY"
             tools:ignore="ContentDescription" />
 
@@ -62,7 +62,7 @@
         android:textColor="@color/black" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnApply"
+        android:id="@+id/btnAddToCart"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"

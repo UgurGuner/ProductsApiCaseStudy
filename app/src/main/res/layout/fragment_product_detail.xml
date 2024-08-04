@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.views.detail.ProductDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolBarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/accentColor"
+            app:navigationIcon="@drawable/back_arrow_icon"
+            app:titleCentered="true"
+            app:titleMarginEnd="40dp"
+            app:titleMarginStart="40dp"
+            app:titleTextColor="@color/white" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="225dp">
+
+                    <ImageView
+                        android:id="@+id/imgProduct"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        tools:ignore="ContentDescription" />
+
+                    <RelativeLayout
+                        android:id="@+id/btnSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@id/imgProduct"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="6dp"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="6dp">
+
+                        <ImageView
+                            android:id="@+id/imgSave"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/unsaved_icon"
+                            tools:ignore="ContentDescription" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txtProductModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textAppearance="@style/SB20"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/txtProductDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="4dp"
+                    android:textAppearance="@style/R16"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/price"
+                    android:textAppearance="@style/R16"
+                    android:textColor="@color/accentColor" />
+
+                <TextView
+                    android:id="@+id/txtProductPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="4dp"
+                    android:textAppearance="@style/R16"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAddToCart"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/blue_button_background_radius_4"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="36dp"
+                android:paddingVertical="8dp"
+                android:text="@string/add_to_cart"
+                android:textAppearance="@style/R16"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

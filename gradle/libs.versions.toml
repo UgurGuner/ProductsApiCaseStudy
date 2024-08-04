@@ -22,6 +22,8 @@ hiltNavFragment = "1.2.0"
 glide = "4.16.0"
 shimmer = "0.5.0"
 fragmentAndroid = "1.8.2"
+navigationSafeArgs = "2.7.7"
+swiperefreshlayout = "1.2.0-alpha01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +33,7 @@ androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "frag
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -56,6 +59,7 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hiltPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+navigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationSafeArgs" }
 
 [bundles]
 unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin"]

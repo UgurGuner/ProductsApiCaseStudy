@@ -7,7 +7,7 @@ import com.eugurguner.productsapicasestudy.databinding.ProductItemBinding
 import com.eugurguner.productsapicasestudy.domain.model.Product
 
 class ProductAdapter(
-    var productList: List<Product>,
+    var productList: MutableList<Product>,
     private val onProductClicked: (Product) -> Unit,
     private val onSaveClicked: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {

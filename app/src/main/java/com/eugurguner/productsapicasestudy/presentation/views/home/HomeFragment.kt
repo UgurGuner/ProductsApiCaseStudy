@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.eugurguner.productsapicasestudy.core.UIState
@@ -47,14 +48,31 @@ class HomeFragment : Fragment() {
         adapter =
             ProductAdapter(
                 productList = mutableListOf(),
-                onProductClicked = {},
-                onSaveClicked = {}
+                onProductClicked = { product ->
+                    navigateToProductDetail(product = product)
+                },
+                onSaveClicked = { product ->
+                    onProductFavorite(product = product)
+                }
             )
 
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
 
         viewModelListener()
+    }
+
+    private fun onProductFavorite(product: Product) {
+        var index = -1
+        adapter?.productList?.forEachIndexed { i, p ->
+            if (p.id == product.id) {
+                p.isSaved = !p.isSaved
+                index = i
+                viewModel.saveOrRemoveProduct(product = p)
+            }
+        }
+        if (index == -1) return
+        adapter?.notifyItemChanged(index)
     }
 
     private fun viewModelListener() {
@@ -75,7 +93,7 @@ class HomeFragment : Fragment() {
 
             is UIState.Success -> {
                 val data = uiState.data
-                adapter?.productList = data
+                adapter?.productList = data.toMutableList()
                 adapter?.notifyDataSetChanged()
                 // Update UI with the product list (uiState.data)
             }
@@ -87,6 +105,12 @@ class HomeFragment : Fragment() {
             is UIState.Empty -> {
                 // Display an empty state message
             }
+        }
+    }
+
+    private fun navigateToProductDetail(product: Product) {
+        HomeFragmentDirections.navigateToProductDetail(productModel = product).apply {
+            Navigation.findNavController(binding.root).navigate(this)
         }
     }
 

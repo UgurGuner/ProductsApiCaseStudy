@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hiltPlugin)
+    alias(libs.plugins.navigationSafeArgs)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -67,6 +69,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.swiperefreshlayout)
 
     // Api Request and Fetch
     implementation(libs.retrofit)

@@ -6,4 +6,5 @@
     <string name="tab4">User</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="e_market">E-Market</string>
+    <string name="price">Price:</string>
 </resources>

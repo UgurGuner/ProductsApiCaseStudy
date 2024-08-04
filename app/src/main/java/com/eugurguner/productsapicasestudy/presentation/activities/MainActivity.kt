@@ -2,6 +2,7 @@ package com.eugurguner.productsapicasestudy.presentation.activities
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -10,11 +11,13 @@ import com.eugurguner.productsapicasestudy.R
 import com.eugurguner.productsapicasestudy.core.extensions.changeNavigationBarColor
 import com.eugurguner.productsapicasestudy.core.extensions.changeStatusBarColor
 import com.eugurguner.productsapicasestudy.databinding.ActivityMainBinding
+import com.eugurguner.productsapicasestudy.presentation.viewModels.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val viewModel: MainActivityViewModel by viewModels()
     private var selectedTab = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.navHostFragment)
         binding.bottomNavigationView.setupWithNavController(navController)
         this.selectedTab = binding.bottomNavigationView.selectedItemId
-        setBadgeForCart()
+        setBadgeObserver()
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
 
             if (selectedTab == item.itemId) return@setOnItemSelectedListener false
@@ -66,12 +69,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setBadgeForCart() {
-        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
-        badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
-        badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
-        badge.isVisible = true
-        badge.number = 10
+    private fun setBadgeObserver() {
+        viewModel.badgeCount.observe(this) { count ->
+            val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
+            badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
+            badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
+            badge.isVisible = count > 0
+            badge.number = count
+        }
     }
 
     private val onBackPressedCallback =

@@ -1,5 +1,9 @@
 package com.eugurguner.productsapicasestudy.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Product(
     val id: String,
     val name: String,
@@ -8,5 +12,6 @@ data class Product(
     val description: String,
     val model: String,
     val brand: String,
-    val createdAt: String
-)
+    val createdAt: String,
+    var isSaved: Boolean = false
+) : Parcelable
