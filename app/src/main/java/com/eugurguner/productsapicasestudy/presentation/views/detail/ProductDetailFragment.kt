@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.eugurguner.productsapicasestudy.R
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.core.StaticVariables
 import com.eugurguner.productsapicasestudy.core.extensions.formatPrice
 import com.eugurguner.productsapicasestudy.databinding.FragmentProductDetailBinding
@@ -79,18 +80,19 @@ class ProductDetailFragment : Fragment() {
         binding.btnAddToCart.setOnClickListener {
             viewModel.addProductToCart(product = args.productModel)
         }
-
         lifecycleScope.launch {
-            launch {
-                viewModel.favoriteBadgeCount.collect { count ->
-                    if (count == null) return@collect
-                    mainActivityViewModel.updateFavoriteBadgeCountAfterSaveRemoveOperation(count = count)
-                }
-            }
-            launch {
-                viewModel.cartBadgeCount.collect { count ->
-                    if (count == null) return@collect
-                    mainActivityViewModel.updateCartBadgeCountAfterSaveRemoveOperation(count = count)
+            viewModel.appEvents.collect { appEvent ->
+                when (appEvent) {
+                    AppEvents.None -> {}
+                    AppEvents.OnCartBadgeUpdate -> {
+                        mainActivityViewModel.updateCartBadgeCount()
+                        viewModel.onEventHandled()
+                    }
+
+                    AppEvents.OnFavoriteBadgeUpdate -> {
+                        mainActivityViewModel.updateFavoriteBadgeCount()
+                        viewModel.onEventHandled()
+                    }
                 }
             }
         }

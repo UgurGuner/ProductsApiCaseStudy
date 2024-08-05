@@ -2,6 +2,7 @@ package com.eugurguner.productsapicasestudy.presentation.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.domain.useCase.ProductUseCases
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.CartProductUseCases
@@ -18,11 +19,8 @@ class ProductDetailFragmentViewModel @Inject constructor(
     private val productUseCases: ProductUseCases,
     private val cartProductUseCases: CartProductUseCases
 ) : ViewModel() {
-    private val _favoriteBadgeCount: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val favoriteBadgeCount = _favoriteBadgeCount.asStateFlow()
-
-    private val _cartBadgeCount: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val cartBadgeCount = _cartBadgeCount.asStateFlow()
+    private val _appEvents: MutableStateFlow<AppEvents> = MutableStateFlow(AppEvents.None)
+    val appEvents = _appEvents.asStateFlow()
 
     fun saveOrRemoveProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -31,16 +29,18 @@ class ProductDetailFragmentViewModel @Inject constructor(
             } else {
                 productUseCases.saveProductUseCase.invoke(product = product)
             }
-            val savedProductCount = productUseCases.getSavedProductsUseCase.invoke().count()
-            _favoriteBadgeCount.update { savedProductCount }
+            _appEvents.update { AppEvents.OnFavoriteBadgeUpdate }
         }
     }
 
     fun addProductToCart(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             cartProductUseCases.addProductToCartUseCase.invoke(product = product)
-            val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
-            _cartBadgeCount.update { cartProducts.sumOf { it.quantitiy } }
+            _appEvents.update { AppEvents.OnCartBadgeUpdate }
         }
+    }
+
+    fun onEventHandled() {
+        _appEvents.update { AppEvents.None }
     }
 }

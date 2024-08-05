@@ -25,7 +25,39 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="16dp"
+            android:visibility="visible"
             tools:listitem="@layout/cart_item" />
+
+        <LinearLayout
+            android:paddingHorizontal="16dp"
+            android:visibility="gone"
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/basket_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="4dp"
+                android:text="Your cart is currently empty. You can select products and add them to the cart by clicking the 'Add To Cart' button in the home page and detail pages. "
+                android:textAlignment="center"
+                android:textAppearance="@style/R20"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

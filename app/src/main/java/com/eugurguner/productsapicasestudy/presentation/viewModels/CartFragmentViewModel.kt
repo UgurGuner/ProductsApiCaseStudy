@@ -20,9 +20,6 @@ class CartFragmentViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _cartBadgeCount: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val cartBadgeCount = _cartBadgeCount.asStateFlow()
-
     fun getCartProducts() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = UIState.Loading
@@ -44,7 +41,10 @@ class CartFragmentViewModel @Inject constructor(
             cartProductUseCases.decreaseCartProductUseCase.invoke(product = product)
             getCartProducts()
             val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
-            _cartBadgeCount.update { cartProducts.sumOf { it.quantitiy } }
+            val totalCount = cartProducts.sumOf { it.quantitiy }
+            if (totalCount == 0) {
+                _uiState.update { UIState.Empty }
+            }
         }
     }
 
@@ -52,8 +52,6 @@ class CartFragmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             cartProductUseCases.increaseCartProductUseCase.invoke(product = product)
             getCartProducts()
-            val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
-            _cartBadgeCount.update { cartProducts.sumOf { it.quantitiy } }
         }
     }
 }

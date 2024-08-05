@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.eugurguner.productsapicasestudy.R
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.core.sortAndFilter.FilterOptions
 import com.eugurguner.productsapicasestudy.core.sortAndFilter.filterList
@@ -136,20 +138,24 @@ class HomeFragment :
     private fun viewModelListener() {
         lifecycleScope.launch {
             launch {
-                viewModel.favoriteBadgeCount.collect { count ->
-                    if (count == null) return@collect
-                    mainActivityViewModel.updateFavoriteBadgeCountAfterSaveRemoveOperation(count = count)
-                }
-            }
-            launch {
-                viewModel.cartBadgeCount.collect { count ->
-                    if (count == null) return@collect
-                    mainActivityViewModel.updateCartBadgeCountAfterSaveRemoveOperation(count = count)
-                }
-            }
-            launch {
                 viewModel.uiState.collect { uiState ->
                     handleUiState(uiState)
+                }
+            }
+            launch {
+                viewModel.appEvents.collect { appEvent ->
+                    when (appEvent) {
+                        AppEvents.None -> {}
+                        AppEvents.OnCartBadgeUpdate -> {
+                            mainActivityViewModel.updateCartBadgeCount()
+                            viewModel.onEventHandled()
+                        }
+
+                        AppEvents.OnFavoriteBadgeUpdate -> {
+                            mainActivityViewModel.updateFavoriteBadgeCount()
+                            viewModel.onEventHandled()
+                        }
+                    }
                 }
             }
             launch {
@@ -168,7 +174,7 @@ class HomeFragment :
     private fun handleUiState(uiState: UIState<List<Product>>) {
         when (uiState) {
             is UIState.Loading -> {
-                // Show loading indicator
+                onLoadingStateChanged(isLoading = true)
             }
 
             is UIState.Success -> {
@@ -176,15 +182,14 @@ class HomeFragment :
                 adapter?.productList = data.toMutableList()
                 adapter?.notifyDataSetChanged()
                 sharedViewModel.setFilterOptions(data)
+                onLoadingStateChanged(isLoading = false)
             }
 
             is UIState.Error -> {
-                // Show error message (uiState.message)
+                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
             }
 
-            is UIState.Empty -> {
-                // Display an empty state message
-            }
+            is UIState.Empty -> {}
         }
     }
 
@@ -200,6 +205,16 @@ class HomeFragment :
         } else {
             binding.txtFiltersInfo.text = getString(R.string.filters)
             loadOriginalProductList()
+        }
+    }
+
+    private fun onLoadingStateChanged(isLoading: Boolean) {
+        if (isLoading) {
+            binding.loadingView.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.loadingView.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 

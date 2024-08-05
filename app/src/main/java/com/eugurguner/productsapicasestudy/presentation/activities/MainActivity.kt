@@ -94,8 +94,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.cartBadgeCount.observe(this) { count ->
             updateCartBadge(count = count)
         }
-        viewModel.updateFavoriteBadgeCountAtStart()
-        viewModel.updateCartBadgeCountAtStart()
+        viewModel.updateFavoriteBadgeCount()
+        viewModel.updateCartBadgeCount()
     }
 
     private fun updateFavoriteBadge(count: Int) {

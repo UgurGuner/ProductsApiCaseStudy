@@ -2,6 +2,7 @@ package com.eugurguner.productsapicasestudy.presentation.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.core.sortAndFilter.SortOption
 import com.eugurguner.productsapicasestudy.domain.model.Product
@@ -23,13 +24,10 @@ class HomeFragmentViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _appEvents: MutableStateFlow<AppEvents> = MutableStateFlow(AppEvents.None)
+    val appEvents = _appEvents.asStateFlow()
+
     private val productList = MutableStateFlow<List<Product>>(emptyList())
-
-    private val _favoriteBadgeCount: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val favoriteBadgeCount = _favoriteBadgeCount.asStateFlow()
-
-    private val _cartBadgeCount: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val cartBadgeCount = _cartBadgeCount.asStateFlow()
 
     private var sortOption: MutableStateFlow<SortOption> = MutableStateFlow(SortOption.OLD_TO_NEW)
 
@@ -57,16 +55,14 @@ class HomeFragmentViewModel @Inject constructor(
             } else {
                 productUseCases.saveProductUseCase.invoke(product = product)
             }
-            val savedProductCount = productUseCases.getSavedProductsUseCase.invoke().count()
-            _favoriteBadgeCount.update { savedProductCount }
+            _appEvents.update { AppEvents.OnFavoriteBadgeUpdate }
         }
     }
 
     fun addProductToCart(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             cartProductUseCases.addProductToCartUseCase.invoke(product = product)
-            val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
-            _cartBadgeCount.update { cartProducts.sumOf { it.quantitiy } }
+            _appEvents.update { AppEvents.OnCartBadgeUpdate }
         }
     }
 
@@ -75,4 +71,8 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     fun getFetchedProducts(): List<Product> = productList.value
+
+    fun onEventHandled() {
+        _appEvents.update { AppEvents.None }
+    }
 }

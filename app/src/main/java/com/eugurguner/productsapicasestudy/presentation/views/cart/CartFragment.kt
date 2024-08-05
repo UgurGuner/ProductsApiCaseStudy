@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -66,12 +67,6 @@ class CartFragment : Fragment() {
     private fun viewModelListener() {
         lifecycleScope.launch {
             launch {
-                viewModel.cartBadgeCount.collect { count ->
-                    if (count == null) return@collect
-                    mainActivityViewModel.updateCartBadgeCountAfterSaveRemoveOperation(count = count)
-                }
-            }
-            launch {
                 viewModel.uiState.collect { uiState ->
                     handleUiState(uiState)
                 }
@@ -86,25 +81,26 @@ class CartFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun handleUiState(uiState: UIState<List<Product>>) {
+        mainActivityViewModel.updateCartBadgeCount()
         when (uiState) {
-            is UIState.Loading -> {
-                // Show loading indicator
-            }
+            is UIState.Loading -> {}
 
             is UIState.Success -> {
                 val data = uiState.data
                 adapter?.cartProductList = data.toMutableList()
                 adapter?.notifyDataSetChanged()
                 updateUI(list = data)
-                // Update UI with the product list (uiState.data)
             }
 
             is UIState.Error -> {
-                // Show error message (uiState.message)
+                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+                updateUI(emptyList())
             }
 
             is UIState.Empty -> {
-                // Display an empty state message
+                adapter?.cartProductList?.clear()
+                adapter?.notifyDataSetChanged()
+                updateUI(emptyList())
             }
         }
     }
@@ -112,6 +108,17 @@ class CartFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun updateUI(list: List<Product>) {
         val totalPrice = list.sumOf { (it.price * it.quantitiy).toInt() }
-        binding.txtProductsTotalPrice.text = "${totalPrice.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
+        if (totalPrice != 0) {
+            binding.txtProductsTotalPrice.text = "${totalPrice.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
+        } else {
+            binding.txtProductsTotalPrice.text = ""
+        }
+        if (list.isEmpty()) {
+            binding.recyclerView.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
+        } else {
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.emptyView.visibility = View.GONE
+        }
     }
 }

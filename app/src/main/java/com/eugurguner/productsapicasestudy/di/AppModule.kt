@@ -2,6 +2,7 @@ package com.eugurguner.productsapicasestudy.di
 
 import android.content.Context
 import androidx.room.Room
+import com.eugurguner.productsapicasestudy.BuildConfig
 import com.eugurguner.productsapicasestudy.data.local.db.AppDatabase
 import com.eugurguner.productsapicasestudy.data.network.AppNetworkService
 import com.google.gson.Gson
@@ -35,7 +36,7 @@ object AppModule {
     ): Retrofit =
         Retrofit
             .Builder()
-            .baseUrl("https://5fc9346b2af77700165ae514.mockapi.io/")
+            .baseUrl(BuildConfig.API_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

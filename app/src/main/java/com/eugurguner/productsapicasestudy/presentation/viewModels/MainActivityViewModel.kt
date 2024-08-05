@@ -23,7 +23,7 @@ class MainActivityViewModel @Inject constructor(
     private val _cartBadgeCount = MutableLiveData(0)
     val cartBadgeCount: LiveData<Int> = _cartBadgeCount
 
-    fun updateFavoriteBadgeCountAtStart() {
+    fun updateFavoriteBadgeCount() {
         viewModelScope.launch(Dispatchers.IO) {
             val savedProductCount = productUseCases.getSavedProductsUseCase.invoke().count()
             withContext(Dispatchers.Main) {
@@ -32,20 +32,12 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun updateFavoriteBadgeCountAfterSaveRemoveOperation(count: Int) {
-        _favoriteBadgeCount.value = count
-    }
-
-    fun updateCartBadgeCountAtStart() {
+    fun updateCartBadgeCount() {
         viewModelScope.launch(Dispatchers.IO) {
             val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
             withContext(Dispatchers.Main) {
                 _cartBadgeCount.value = cartProducts.sumOf { it.quantitiy }
             }
         }
-    }
-
-    fun updateCartBadgeCountAfterSaveRemoveOperation(count: Int) {
-        _cartBadgeCount.value = count
     }
 }

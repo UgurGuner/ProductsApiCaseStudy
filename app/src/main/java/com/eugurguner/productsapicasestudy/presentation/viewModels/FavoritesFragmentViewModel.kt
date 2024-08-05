@@ -2,6 +2,7 @@ package com.eugurguner.productsapicasestudy.presentation.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.domain.useCase.ProductUseCases
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +22,9 @@ class FavoritesFragmentViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private val _appEvents: MutableStateFlow<AppEvents> = MutableStateFlow(AppEvents.None)
+    val appEvents = _appEvents.asStateFlow()
 
     fun getFavoriteProducts() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,6 +49,18 @@ class FavoritesFragmentViewModel @Inject constructor(
             } else {
                 productUseCases.saveProductUseCase.invoke(product = product)
             }
+            _appEvents.update { AppEvents.OnFavoriteBadgeUpdate }
         }
+    }
+
+    fun addProductToCart(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cartProductUseCases.addProductToCartUseCase.invoke(product = product)
+            _appEvents.update { AppEvents.OnCartBadgeUpdate }
+        }
+    }
+
+    fun onEventHandled() {
+        _appEvents.update { AppEvents.None }
     }
 }

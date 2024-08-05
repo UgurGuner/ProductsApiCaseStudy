@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.eugurguner.productsapicasestudy.core.AppEvents
 import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.databinding.FragmentFavoritesBinding
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.presentation.adapters.product.ProductAdapter
 import com.eugurguner.productsapicasestudy.presentation.viewModels.FavoritesFragmentViewModel
+import com.eugurguner.productsapicasestudy.presentation.viewModels.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -24,6 +28,8 @@ class FavoritesFragment : Fragment() {
     private var adapter: ProductAdapter? = null
 
     private val viewModel: FavoritesFragmentViewModel by viewModels()
+
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +57,9 @@ class FavoritesFragment : Fragment() {
                 onSaveClicked = { product ->
                     onProductFavorite(product = product)
                 },
-                onAddToCartClicked = {}
+                onAddToCartClicked = {
+                    viewModel.addProductToCart(product = it)
+                }
             )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -74,9 +82,27 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun viewModelListener() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                handleUiState(uiState)
+        lifecycleScope.launch {
+            launch {
+                viewModel.uiState.collect { uiState ->
+                    handleUiState(uiState)
+                }
+            }
+            launch {
+                viewModel.appEvents.collect { appEvent ->
+                    when (appEvent) {
+                        AppEvents.None -> {}
+                        AppEvents.OnCartBadgeUpdate -> {
+                            mainActivityViewModel.updateCartBadgeCount()
+                            viewModel.onEventHandled()
+                        }
+
+                        AppEvents.OnFavoriteBadgeUpdate -> {
+                            mainActivityViewModel.updateFavoriteBadgeCount()
+                            viewModel.onEventHandled()
+                        }
+                    }
+                }
             }
         }
         viewModel.getFavoriteProducts()
@@ -86,24 +112,42 @@ class FavoritesFragment : Fragment() {
     private fun handleUiState(uiState: UIState<List<Product>>) {
         when (uiState) {
             is UIState.Loading -> {
-                // Show loading indicator
+                onLoadingStateChanged(isLoading = true)
             }
 
             is UIState.Success -> {
                 val data = uiState.data
                 adapter?.productList = data.toMutableList()
                 adapter?.notifyDataSetChanged()
-                // Update UI with the product list (uiState.data)
+                onLoadingStateChanged(isLoading = false)
             }
 
             is UIState.Error -> {
-                // Show error message (uiState.message)
+                loadEmptyView()
+                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
             }
 
             is UIState.Empty -> {
-                // Display an empty state message
+                loadEmptyView()
             }
         }
+    }
+
+    private fun onLoadingStateChanged(isLoading: Boolean) {
+        binding.emptyView.visibility = View.GONE
+        if (isLoading) {
+            binding.loadingView.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.loadingView.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun loadEmptyView() {
+        binding.loadingView.visibility = View.GONE
+        binding.recyclerView.visibility = View.GONE
+        binding.emptyView.visibility = View.VISIBLE
     }
 
     private fun navigateToProductDetail(product: Product) {
