@@ -7,4 +7,6 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="e_market">E-Market</string>
     <string name="price">Price:</string>
+    <string name="total">Total:</string>
+    <string name="complete">Complete</string>
 </resources>

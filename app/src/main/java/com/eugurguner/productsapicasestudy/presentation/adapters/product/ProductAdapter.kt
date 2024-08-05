@@ -9,7 +9,8 @@ import com.eugurguner.productsapicasestudy.domain.model.Product
 class ProductAdapter(
     var productList: MutableList<Product>,
     private val onProductClicked: (Product) -> Unit,
-    private val onSaveClicked: (Product) -> Unit
+    private val onSaveClicked: (Product) -> Unit,
+    private val onAddToCartClicked: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding = ProductItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,6 +26,10 @@ class ProductAdapter(
 
         holder.binding.btnSave.setOnClickListener {
             onSaveClicked.invoke(productList[position])
+        }
+
+        holder.binding.btnAddToCart.setOnClickListener {
+            onAddToCartClicked.invoke(productList[position])
         }
     }
 

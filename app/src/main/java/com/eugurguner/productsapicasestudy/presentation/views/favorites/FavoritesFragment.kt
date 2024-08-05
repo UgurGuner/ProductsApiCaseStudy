@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -39,7 +38,6 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
         setUpAdapter()
     }
 
@@ -52,7 +50,8 @@ class FavoritesFragment : Fragment() {
                 },
                 onSaveClicked = { product ->
                     onProductFavorite(product = product)
-                }
+                },
+                onAddToCartClicked = {}
             )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -112,11 +111,4 @@ class FavoritesFragment : Fragment() {
             Navigation.findNavController(binding.root).navigate(this)
         }
     }
-
-    private val onBackPressedCallback =
-        object : OnBackPressedCallback(enabled = true) {
-            override fun handleOnBackPressed() {
-                activity?.finishAffinity()
-            }
-        }
 }

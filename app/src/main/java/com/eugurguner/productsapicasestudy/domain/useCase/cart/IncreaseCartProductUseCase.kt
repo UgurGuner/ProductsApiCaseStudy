@@ -3,13 +3,12 @@ package com.eugurguner.productsapicasestudy.domain.useCase.cart
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.domain.repository.ProductRepository
 
-class AddProductToCartUseCase(
+class IncreaseCartProductUseCase(
     private val productRepository: ProductRepository
 ) {
     suspend operator fun invoke(product: Product) {
-        val existingCartItem = productRepository.getCartProductById(productId = product.id)
-        if (existingCartItem != null) {
-            productRepository.increaseCartProductQuantity(product = existingCartItem)
+        if (product.quantitiy >= 1) {
+            productRepository.increaseCartProductQuantity(product = product)
         } else {
             productRepository.addProductToCart(product = product)
         }

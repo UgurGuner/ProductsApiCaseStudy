@@ -14,8 +14,9 @@ import com.eugurguner.productsapicasestudy.domain.useCase.RemoveProductUseCase
 import com.eugurguner.productsapicasestudy.domain.useCase.SaveProductUseCase
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.AddProductToCartUseCase
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.CartProductUseCases
+import com.eugurguner.productsapicasestudy.domain.useCase.cart.DecreaseCartProductUseCase
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.GetCartProductsUseCase
-import com.eugurguner.productsapicasestudy.domain.useCase.cart.RemoveProductFromCartUseCase
+import com.eugurguner.productsapicasestudy.domain.useCase.cart.IncreaseCartProductUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -70,6 +71,7 @@ object ProductModule {
         CartProductUseCases(
             getCartProductsUseCase = GetCartProductsUseCase(productRepository = productRepository),
             addProductToCartUseCase = AddProductToCartUseCase(productRepository = productRepository),
-            removeProductFromCartUseCase = RemoveProductFromCartUseCase(productRepository = productRepository)
+            increaseCartProductUseCase = IncreaseCartProductUseCase(productRepository = productRepository),
+            decreaseCartProductUseCase = DecreaseCartProductUseCase(productRepository = productRepository)
         )
 }

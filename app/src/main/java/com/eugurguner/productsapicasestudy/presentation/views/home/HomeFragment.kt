@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.databinding.FragmentHomeBinding
 import com.eugurguner.productsapicasestudy.domain.model.Product
@@ -24,7 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment :
+    Fragment(),
+    SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentHomeBinding
     private var adapter: ProductAdapter? = null
 
@@ -44,8 +45,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(onBackPressedCallback)
         setUpAdapter()
+        setListeners()
     }
 
     private fun setUpAdapter() {
@@ -57,13 +58,19 @@ class HomeFragment : Fragment() {
                 },
                 onSaveClicked = { product ->
                     onProductFavorite(product = product)
+                },
+                onAddToCartClicked = { product ->
+                    onAddProductToCart(product = product)
                 }
             )
 
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
+    }
 
+    private fun setListeners() {
         viewModelListener()
+        binding.swipeRefresh.setOnRefreshListener(this)
     }
 
     private fun onProductFavorite(product: Product) {
@@ -79,11 +86,22 @@ class HomeFragment : Fragment() {
         adapter?.notifyItemChanged(index)
     }
 
+    private fun onAddProductToCart(product: Product) {
+        viewModel.addProductToCart(product = product)
+    }
+
     private fun viewModelListener() {
         lifecycleScope.launch {
             launch {
-                viewModel.badgeCount.collect { count ->
-                    mainActivityViewModel.updateBadgeCountAfterSaveRemoveOperation(count = count)
+                viewModel.favoriteBadgeCount.collect { count ->
+                    if (count == null) return@collect
+                    mainActivityViewModel.updateFavoriteBadgeCountAfterSaveRemoveOperation(count = count)
+                }
+            }
+            launch {
+                viewModel.cartBadgeCount.collect { count ->
+                    if (count == null) return@collect
+                    mainActivityViewModel.updateCartBadgeCountAfterSaveRemoveOperation(count = count)
                 }
             }
             launch {
@@ -125,10 +143,11 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val onBackPressedCallback =
-        object : OnBackPressedCallback(enabled = true) {
-            override fun handleOnBackPressed() {
-                activity?.finishAffinity()
-            }
-        }
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onRefresh() {
+        binding.swipeRefresh.isRefreshing = false
+        adapter?.productList?.clear()
+        adapter?.notifyDataSetChanged()
+        viewModel.fetchProducts()
+    }
 }

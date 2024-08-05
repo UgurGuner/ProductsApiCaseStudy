@@ -5,25 +5,47 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eugurguner.productsapicasestudy.domain.useCase.ProductUseCases
+import com.eugurguner.productsapicasestudy.domain.useCase.cart.CartProductUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val productUseCases: ProductUseCases
+    private val productUseCases: ProductUseCases,
+    private val cartProductUseCases: CartProductUseCases
 ) : ViewModel() {
-    private val _badgeCount = MutableLiveData(0)
-    val badgeCount: LiveData<Int> = _badgeCount
+    private val _favoriteBadgeCount = MutableLiveData(0)
+    val favoriteBadgeCount: LiveData<Int> = _favoriteBadgeCount
 
-    fun updateBadgeCountAtStart() {
-        viewModelScope.launch {
+    private val _cartBadgeCount = MutableLiveData(0)
+    val cartBadgeCount: LiveData<Int> = _cartBadgeCount
+
+    fun updateFavoriteBadgeCountAtStart() {
+        viewModelScope.launch(Dispatchers.IO) {
             val savedProductCount = productUseCases.getSavedProductsUseCase.invoke().count()
-            _badgeCount.value = savedProductCount
+            withContext(Dispatchers.Main) {
+                _favoriteBadgeCount.value = savedProductCount
+            }
         }
     }
 
-    fun updateBadgeCountAfterSaveRemoveOperation(count: Int) {
-        _badgeCount.value = count
+    fun updateFavoriteBadgeCountAfterSaveRemoveOperation(count: Int) {
+        _favoriteBadgeCount.value = count
+    }
+
+    fun updateCartBadgeCountAtStart() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
+            withContext(Dispatchers.Main) {
+                _cartBadgeCount.value = cartProducts.sumOf { it.quantitiy }
+            }
+        }
+    }
+
+    fun updateCartBadgeCountAfterSaveRemoveOperation(count: Int) {
+        _cartBadgeCount.value = count
     }
 }

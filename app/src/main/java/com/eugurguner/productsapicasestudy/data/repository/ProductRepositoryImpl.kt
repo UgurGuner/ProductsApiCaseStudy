@@ -20,6 +20,8 @@ class ProductRepositoryImpl(
 
     override suspend fun getCartProducts(): List<Product> = cartDao.getAllCartItems().map { it.toDomainModel() }
 
+    override suspend fun getCartProductById(productId: String): Product? = cartDao.getCartItemById(productId = productId)?.toDomainModel()
+
     override suspend fun saveProduct(product: Product) {
         productDao.insert(product = product.toDTO())
     }
@@ -34,5 +36,15 @@ class ProductRepositoryImpl(
 
     override suspend fun removeProductFromCart(productId: String) {
         cartDao.deleteCartItem(productId = productId)
+    }
+
+    override suspend fun increaseCartProductQuantity(product: Product) {
+        product.quantitiy += 1
+        cartDao.updateCartItemQuantity(product.toCartDTO())
+    }
+
+    override suspend fun decreaseCartProductQuantity(product: Product) {
+        product.quantitiy -= 1
+        cartDao.updateCartItemQuantity(product.toCartDTO())
     }
 }

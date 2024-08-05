@@ -37,7 +37,8 @@ fun CartProductDTO.toDomainModel(): Product =
         description = description,
         model = model,
         brand = brand,
-        createdAt = createdAt
+        createdAt = createdAt,
+        quantitiy = quantity
     )
 
 fun Product.toCartDTO(): CartProductDTO =
@@ -49,5 +50,6 @@ fun Product.toCartDTO(): CartProductDTO =
         description = description,
         model = model,
         brand = brand,
-        createdAt = createdAt
+        createdAt = createdAt,
+        quantity = quantitiy
     )

@@ -1,10 +1,11 @@
 package com.eugurguner.productsapicasestudy.presentation.activities
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.eugurguner.productsapicasestudy.R
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         changeNavigationBarColor(R.color.white)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        onBackPressedDispatcher.addCallback(onBackPressedCallback)
         setBottomNavigationBar()
     }
 
@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.navHostFragment)
         binding.bottomNavigationView.setupWithNavController(navController)
         this.selectedTab = binding.bottomNavigationView.selectedItemId
-        createBadge()
         setBadgeObserver()
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
 
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.destination_item2 -> {
-                    navController.navigate(R.id.basketFragment)
+                    navController.navigate(R.id.cartFragment)
                     true
                 }
 
@@ -68,31 +67,50 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        addOnBackPressedDispatcher(navController)
     }
 
-    private fun createBadge() {
-        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
-        badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
-        badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
+    private fun addOnBackPressedDispatcher(navController: NavController) {
+        onBackPressedDispatcher.addCallback(this) {
+            if (
+                navController.currentDestination?.id == R.id.homeFragment ||
+                navController.currentDestination?.id == R.id.cartFragment ||
+                navController.currentDestination?.id == R.id.favoritesFragment ||
+                navController.currentDestination?.id == R.id.userFragment
+            ) {
+                finishAffinity()
+            } else {
+                if (!navController.navigateUp()) {
+                    finishAffinity()
+                }
+            }
+        }
     }
 
     private fun setBadgeObserver() {
-        viewModel.badgeCount.observe(this) { count ->
-            updateBadge(count = count)
+        viewModel.favoriteBadgeCount.observe(this) { count ->
+            updateFavoriteBadge(count = count)
         }
-        viewModel.updateBadgeCountAtStart()
+        viewModel.cartBadgeCount.observe(this) { count ->
+            updateCartBadge(count = count)
+        }
+        viewModel.updateFavoriteBadgeCountAtStart()
+        viewModel.updateCartBadgeCountAtStart()
     }
 
-    private fun updateBadge(count: Int) {
-        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
+    private fun updateFavoriteBadge(count: Int) {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item3)
+        badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
+        badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
         badge.isVisible = count > 0
         badge.number = count
     }
 
-    private val onBackPressedCallback =
-        object : OnBackPressedCallback(enabled = true) {
-            override fun handleOnBackPressed() {
-                finishAffinity()
-            }
-        }
+    private fun updateCartBadge(count: Int) {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.destination_item2)
+        badge.backgroundColor = ContextCompat.getColor(this, R.color.badgeRed)
+        badge.badgeTextColor = ContextCompat.getColor(this, R.color.white)
+        badge.isVisible = count > 0
+        badge.number = count
+    }
 }

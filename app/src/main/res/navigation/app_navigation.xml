@@ -19,10 +19,10 @@
             app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
-        android:id="@+id/basketFragment"
-        android:name="com.eugurguner.productsapicasestudy.presentation.views.basket.BasketFragment"
-        android:label="fragment_basket"
-        tools:layout="@layout/fragment_basket" />
+        android:id="@+id/cartFragment"
+        android:name="com.eugurguner.productsapicasestudy.presentation.views.cart.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.eugurguner.productsapicasestudy.presentation.views.favorites.FavoritesFragment"

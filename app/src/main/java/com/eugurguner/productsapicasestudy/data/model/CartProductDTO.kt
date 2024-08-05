@@ -12,5 +12,6 @@ data class CartProductDTO(
     val description: String,
     val model: String,
     val brand: String,
-    val createdAt: String
+    val createdAt: String,
+    var quantity: Int = 1
 )
