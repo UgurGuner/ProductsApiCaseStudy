@@ -48,8 +48,8 @@ class ProductDetailFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun updateUI() {
-        binding.toolBarView.setTitle(args.productModel.model)
-        binding.txtProductModel.text = args.productModel.model
+        binding.toolBarView.setTitle(args.productModel.name)
+        binding.txtProductName.text = args.productModel.name
         binding.txtProductPrice.text = "${args.productModel.price.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
         binding.txtProductDescription.text = args.productModel.description
         val imageUrl = args.productModel.imageUrl
@@ -76,12 +76,22 @@ class ProductDetailFragment : Fragment() {
             viewModel.saveOrRemoveProduct(product = args.productModel)
             updateStar()
         }
-        binding.btnAddToCart.setOnClickListener {}
+        binding.btnAddToCart.setOnClickListener {
+            viewModel.addProductToCart(product = args.productModel)
+        }
 
         lifecycleScope.launch {
-            viewModel.favoriteBadgeCount.collect { count ->
-                if (count == null) return@collect
-                mainActivityViewModel.updateFavoriteBadgeCountAfterSaveRemoveOperation(count = count)
+            launch {
+                viewModel.favoriteBadgeCount.collect { count ->
+                    if (count == null) return@collect
+                    mainActivityViewModel.updateFavoriteBadgeCountAfterSaveRemoveOperation(count = count)
+                }
+            }
+            launch {
+                viewModel.cartBadgeCount.collect { count ->
+                    if (count == null) return@collect
+                    mainActivityViewModel.updateCartBadgeCountAfterSaveRemoveOperation(count = count)
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.eugurguner.productsapicasestudy.core.enums
+package com.eugurguner.productsapicasestudy.core.sortAndFilter
 
 enum class SortOption {
     OLD_TO_NEW,

@@ -13,7 +13,7 @@ class CartViewHolder(
     @SuppressLint("SetTextI18n")
     fun bindView(product: Product) {
         val totalPrice = product.price * product.quantitiy
-        binding.txtProductModel.text = product.model
+        binding.txtProductName.text = product.name
         binding.txtTotalPrice.text = "${totalPrice.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
         binding.txtProductQuantity.text = product.quantitiy.toString()
     }

@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
             when (item.itemId) {
                 R.id.destination_item1 -> {
-                    navController.navigate(R.id.homeFragment)
+                    navController.popBackStack(destinationId = R.id.homeFragment, inclusive = false)
                     true
                 }
 

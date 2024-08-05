@@ -17,7 +17,7 @@ class ProductViewHolder(
         if (product.imageUrl.isNotBlank()) {
             Glide.with(binding.root).load(product.imageUrl).into(binding.imgProduct)
         }
-        binding.txtProductModel.text = product.model
+        binding.txtProductName.text = product.name
         binding.txtProductPrice.text = "${product.price.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
         if (product.isSaved) {
             binding.imgSave.setImageResource(R.drawable.saved_icon)

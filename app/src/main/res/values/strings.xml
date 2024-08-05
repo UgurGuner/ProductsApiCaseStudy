@@ -9,4 +9,14 @@
     <string name="price">Price:</string>
     <string name="total">Total:</string>
     <string name="complete">Complete</string>
+    <string name="sort_by">Sort By</string>
+    <string name="search">Search</string>
+    <string name="filters">Filters:</string>
+    <string name="select_filter">Select Filter</string>
+    <string name="old_to_new">Old to new</string>
+    <string name="new_to_old">New to old</string>
+    <string name="price_high_to_low">Price high to low</string>
+    <string name="price_low_to_high">Price low to high</string>
+    <string name="brand">Brand</string>
+    <string name="model">Model</string>
 </resources>
