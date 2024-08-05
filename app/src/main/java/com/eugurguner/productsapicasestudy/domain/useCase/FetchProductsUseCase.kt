@@ -9,9 +9,11 @@ class FetchProductsUseCase(
     private val productRepository: ProductRepository
 ) {
     suspend operator fun invoke(
-        sortOption: SortOption
+        sortOption: SortOption,
+        limit: Int,
+        page: Int
     ): List<Product> {
-        val productList = productRepository.fetchProducts()
+        val productList = productRepository.fetchProducts(limit = limit, page = page)
         val favoriteProducts = productRepository.getFavoriteProducts()
         productList.forEach { product ->
             if (favoriteProducts.contains(product)) {

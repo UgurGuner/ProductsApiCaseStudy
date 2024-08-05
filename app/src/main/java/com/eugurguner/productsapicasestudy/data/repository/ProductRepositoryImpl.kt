@@ -14,7 +14,8 @@ class ProductRepositoryImpl(
     private val cartDao: CartDao,
     private val productDataSource: ProductDataSource
 ) : ProductRepository {
-    override suspend fun fetchProducts(): List<Product> = productDataSource.fetchProducts().map { it.toDomainModel() }
+    override suspend fun fetchProducts(limit: Int, page: Int): List<Product> =
+        productDataSource.fetchProducts(limit = limit, page = page).map { it.toDomainModel() }
 
     override suspend fun getFavoriteProducts(): List<Product> = productDao.getAll().map { it.toDomainModel() }
 

@@ -6,5 +6,5 @@ import com.eugurguner.productsapicasestudy.data.network.AppNetworkService
 class ProductDataSource(
     private val appNetworkService: AppNetworkService
 ) {
-    suspend fun fetchProducts(): List<ProductDTO> = appNetworkService.getProducts()
+    suspend fun fetchProducts(limit: Int, page: Int): List<ProductDTO> = appNetworkService.getProducts(limit = limit, page = page)
 }

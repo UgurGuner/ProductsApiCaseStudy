@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.eugurguner.productsapicasestudy.R
 import com.eugurguner.productsapicasestudy.core.AppEvents
@@ -74,17 +75,42 @@ class HomeFragment :
                 }
             )
 
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
+
+        binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = adapter
+
+        // Same result could be achieve by using paging3 library but whole
+        // state management structure along with dataSource and adapter structures must have been changed...
+        binding.recyclerView.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (!viewModel.hasMore) return
+
+                    val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    val listSize = adapter?.productList?.count() ?: 0
+
+                    if (!viewModel.isLoading && lastPosition >= listSize - 4) {
+                        binding.paginationView.visibility = View.VISIBLE
+                        viewModel.fetchProducts()
+                    }
+                }
+            }
+        )
     }
 
     private fun setListeners() {
         viewModelListener()
+
         binding.swipeRefresh.setOnRefreshListener(this)
+
         binding.btnFilter.setOnClickListener {
             val filterBottomSheet = FilterBottomSheetDialogFragment()
             filterBottomSheet.show(parentFragmentManager, filterBottomSheet.tag)
         }
+
         binding.editTextSearch.addTextChangedListener(
             object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -167,7 +193,6 @@ class HomeFragment :
                 }
             }
         }
-        viewModel.fetchProducts()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -179,7 +204,7 @@ class HomeFragment :
 
             is UIState.Success -> {
                 val data = uiState.data
-                adapter?.productList = data.toMutableList()
+                adapter?.productList?.addAll(data)
                 adapter?.notifyDataSetChanged()
                 sharedViewModel.setFilterOptions(data)
                 onLoadingStateChanged(isLoading = false)
@@ -211,10 +236,11 @@ class HomeFragment :
     private fun onLoadingStateChanged(isLoading: Boolean) {
         if (isLoading) {
             binding.loadingView.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
+            binding.loadedView.visibility = View.GONE
         } else {
+            binding.paginationView.visibility = View.GONE
             binding.loadingView.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
+            binding.loadedView.visibility = View.VISIBLE
         }
     }
 
@@ -229,6 +255,6 @@ class HomeFragment :
         binding.swipeRefresh.isRefreshing = false
         adapter?.productList?.clear()
         adapter?.notifyDataSetChanged()
-        viewModel.fetchProducts()
+        viewModel.refreshProducts()
     }
 }

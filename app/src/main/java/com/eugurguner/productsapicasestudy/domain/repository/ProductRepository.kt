@@ -3,7 +3,7 @@ package com.eugurguner.productsapicasestudy.domain.repository
 import com.eugurguner.productsapicasestudy.domain.model.Product
 
 interface ProductRepository {
-    suspend fun fetchProducts(): List<Product>
+    suspend fun fetchProducts(limit: Int, page: Int): List<Product>
     suspend fun getFavoriteProducts(): List<Product>
     suspend fun getCartProducts(): List<Product>
     suspend fun getCartProductById(productId: String): Product?

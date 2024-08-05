@@ -27,23 +27,45 @@ class HomeFragmentViewModel @Inject constructor(
     private val _appEvents: MutableStateFlow<AppEvents> = MutableStateFlow(AppEvents.None)
     val appEvents = _appEvents.asStateFlow()
 
-    private val productList = MutableStateFlow<List<Product>>(emptyList())
+    private val productList = mutableListOf<Product>()
+    private var page = 0
+    private var limit: MutableStateFlow<Int> = MutableStateFlow(20)
+    var isLoading = false
+    var hasMore = true
 
     private var sortOption: MutableStateFlow<SortOption> = MutableStateFlow(SortOption.OLD_TO_NEW)
 
+    init {
+        fetchProducts()
+    }
+
     fun fetchProducts() {
+        if (isLoading || !hasMore) return
+
+        isLoading = true
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = UIState.Loading
             try {
-                val products = productUseCases.fetchProductsUseCase.invoke(sortOption = sortOption.value)
-                productList.update { products }
-                if (products.isEmpty()) {
-                    _uiState.value = UIState.Empty
+                val response =
+                    productUseCases.fetchProductsUseCase.invoke(
+                        sortOption = sortOption.value,
+                        limit = limit.value,
+                        page = ++page
+                    )
+                if (response.isEmpty()) {
+                    hasMore = false
+                    if (productList.isEmpty()) {
+                        _uiState.value = UIState.Empty
+                    } else {
+                        _uiState.value = UIState.Success(emptyList())
+                    }
                 } else {
-                    _uiState.value = UIState.Success(products)
+                    productList.addAll(response)
+                    _uiState.value = UIState.Success(response)
                 }
             } catch (e: Exception) {
                 _uiState.value = UIState.Error(e.message ?: "An unknown error occurred")
+            } finally {
+                isLoading = false
             }
         }
     }
@@ -70,9 +92,18 @@ class HomeFragmentViewModel @Inject constructor(
         this.sortOption.update { sortOption }
     }
 
-    fun getFetchedProducts(): List<Product> = productList.value
+    fun getFetchedProducts(): List<Product> = productList
 
     fun onEventHandled() {
         _appEvents.update { AppEvents.None }
+    }
+
+    fun refreshProducts() {
+        _uiState.value = UIState.Loading
+        productList.clear()
+        page = 0
+        hasMore = true
+        isLoading = false
+        fetchProducts()
     }
 }
