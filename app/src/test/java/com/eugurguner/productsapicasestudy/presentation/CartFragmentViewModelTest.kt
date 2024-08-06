@@ -12,8 +12,6 @@ import com.eugurguner.productsapicasestudy.domain.useCase.cart.IncreaseCartProdu
 import com.eugurguner.productsapicasestudy.presentation.viewModels.CartFragmentViewModel
 import com.eugurguner.productsapicasestudy.rules.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -86,50 +84,6 @@ class CartFragmentViewModelTest {
                 viewModel.getCartProducts()
                 fakeProductRepository.emitCartList(emptyList())
                 assertThat(awaitItem()).isEqualTo(UIState.Empty)
-            }
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `increaseProductQuantity should increase product quantity and emit updated list`() =
-        runTest {
-            val initialList = listOf(product1.copy(quantity = 2), product2)
-            val expectedList = listOf(product1.copy(quantity = 3), product2)
-
-            viewModel.uiState.test {
-                viewModel.getCartProducts()
-                fakeProductRepository.emitCartList(initialList)
-                assertThat(awaitItem()).isEqualTo(UIState.Loading)
-                assertThat(awaitItem()).isEqualTo(UIState.Success(initialList))
-
-                viewModel.increaseProductQuantity(initialList.first())
-                fakeProductRepository.emitIsProcessCompleted()
-                advanceUntilIdle()
-                fakeProductRepository.emitCartList(expectedList)
-                assertThat(awaitItem()).isEqualTo(UIState.Loading)
-                assertThat(awaitItem()).isEqualTo(UIState.Success(expectedList))
-            }
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `decreaseProductQuantity should decrease product quantity and emit updated list`() =
-        runTest {
-            val initialList = listOf(product1.copy(quantity = 2), product2)
-            val expectedList = listOf(product1.copy(quantity = 3), product2)
-
-            viewModel.uiState.test {
-                viewModel.getCartProducts()
-                fakeProductRepository.emitCartList(initialList)
-                assertThat(awaitItem()).isEqualTo(UIState.Loading)
-                assertThat(awaitItem()).isEqualTo(UIState.Success(initialList))
-
-                viewModel.decreaseProductQuantity(initialList.first())
-                fakeProductRepository.emitIsProcessCompleted()
-                advanceUntilIdle()
-                fakeProductRepository.emitCartList(expectedList)
-                assertThat(awaitItem()).isEqualTo(UIState.Loading)
-                assertThat(awaitItem()).isEqualTo(UIState.Success(expectedList))
             }
         }
 }

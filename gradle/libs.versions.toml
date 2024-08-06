@@ -25,6 +25,8 @@ navigationSafeArgs = "2.7.7"
 swiperefreshlayout = "1.2.0-alpha01"
 kotlinCoroutinesTesting = "1.8.0"
 truth = "1.4.2"
+turbine = "1.1.0"
+coreTesting = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +58,8 @@ mockitoKotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "m
 kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutinesTesting" }
 kotlinTest = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 truthTest = { module = "com.google.truth:truth", version.ref = "truth" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+coreTesting = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 #UITesting
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
@@ -68,5 +72,5 @@ hiltPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 navigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationSafeArgs" }
 
 [bundles]
-unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin", "kotlinCoroutinesTest", "kotlinTest", "truthTest"]
+unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin", "kotlinCoroutinesTest", "kotlinTest", "truthTest", "turbine", "coreTesting"]
 
