@@ -23,6 +23,8 @@ shimmer = "0.5.0"
 fragmentAndroid = "1.8.2"
 navigationSafeArgs = "2.7.7"
 swiperefreshlayout = "1.2.0-alpha01"
+kotlinCoroutinesTesting = "1.8.0"
+truth = "1.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,22 +36,28 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hiltCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hiltNavFragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavFragment" }
-#UnitTesting
-mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
-mockitoKotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+#API
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+#UI
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+#UnitTesting
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockitoKotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutinesTesting" }
+kotlinTest = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+truthTest = { module = "com.google.truth:truth", version.ref = "truth" }
+#UITesting
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -60,5 +68,5 @@ hiltPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 navigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationSafeArgs" }
 
 [bundles]
-unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin"]
+unitTesting = ["junit", "androidx-junit", "mockito", "mockitoKotlin", "kotlinCoroutinesTest", "kotlinTest", "truthTest"]
 

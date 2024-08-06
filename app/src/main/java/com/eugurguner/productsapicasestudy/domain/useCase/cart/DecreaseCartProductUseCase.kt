@@ -7,7 +7,7 @@ class DecreaseCartProductUseCase(
     private val productRepository: ProductRepository
 ) {
     suspend operator fun invoke(product: Product) {
-        if (product.quantitiy > 1) {
+        if (product.quantity > 1) {
             productRepository.decreaseCartProductQuantity(product = product)
         } else {
             productRepository.removeProductFromCart(productId = product.id)

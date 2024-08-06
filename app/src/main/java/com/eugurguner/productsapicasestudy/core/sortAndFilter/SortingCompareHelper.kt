@@ -27,6 +27,7 @@ fun sortList(sortOption: SortOption, productList: List<Product>): List<Product> 
 fun filterList(filterOptions: FilterOptions, productList: List<Product>): List<Product> {
     val brands = filterOptions.brands.filter { it.isSelected }.map { it.brandName }
     val models = filterOptions.models.filter { it.isSelected }.map { it.modelName }
+    if (brands.isEmpty() && models.isEmpty()) return productList
     val filteredProducts = mutableListOf<Product>()
     productList.forEach {
         if (brands.contains(it.brand)) {

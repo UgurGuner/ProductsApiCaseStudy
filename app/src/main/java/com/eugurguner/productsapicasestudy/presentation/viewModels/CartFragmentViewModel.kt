@@ -6,22 +6,24 @@ import com.eugurguner.productsapicasestudy.core.UIState
 import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.CartProductUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class CartFragmentViewModel @Inject constructor(
-    private val cartProductUseCases: CartProductUseCases
+    private val cartProductUseCases: CartProductUseCases,
+    @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     fun getCartProducts() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             _uiState.value = UIState.Loading
             try {
                 val products = cartProductUseCases.getCartProductsUseCase.invoke()
@@ -37,11 +39,11 @@ class CartFragmentViewModel @Inject constructor(
     }
 
     fun decreaseProductQuantity(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             cartProductUseCases.decreaseCartProductUseCase.invoke(product = product)
-            getCartProducts()
             val cartProducts = cartProductUseCases.getCartProductsUseCase.invoke()
-            val totalCount = cartProducts.sumOf { it.quantitiy }
+            getCartProducts()
+            val totalCount = cartProducts.sumOf { it.quantity }
             if (totalCount == 0) {
                 _uiState.update { UIState.Empty }
             }
@@ -49,7 +51,7 @@ class CartFragmentViewModel @Inject constructor(
     }
 
     fun increaseProductQuantity(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             cartProductUseCases.increaseCartProductUseCase.invoke(product = product)
             getCartProducts()
         }

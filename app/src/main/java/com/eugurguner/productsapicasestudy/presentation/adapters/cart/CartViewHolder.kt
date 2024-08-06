@@ -12,9 +12,9 @@ class CartViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("SetTextI18n")
     fun bindView(product: Product) {
-        val totalPrice = product.price * product.quantitiy
+        val totalPrice = product.price * product.quantity
         binding.txtProductName.text = product.name
         binding.txtTotalPrice.text = "${totalPrice.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
-        binding.txtProductQuantity.text = product.quantitiy.toString()
+        binding.txtProductQuantity.text = product.quantity.toString()
     }
 }

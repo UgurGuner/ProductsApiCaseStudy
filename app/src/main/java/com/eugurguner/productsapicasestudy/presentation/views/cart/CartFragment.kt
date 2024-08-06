@@ -107,7 +107,7 @@ class CartFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun updateUI(list: List<Product>) {
-        val totalPrice = list.sumOf { (it.price * it.quantitiy).toInt() }
+        val totalPrice = list.sumOf { (it.price * it.quantity).toInt() }
         if (totalPrice != 0) {
             binding.txtProductsTotalPrice.text = "${totalPrice.formatPrice()}${StaticVariables.CURRENCY_SYMBOL}"
         } else {

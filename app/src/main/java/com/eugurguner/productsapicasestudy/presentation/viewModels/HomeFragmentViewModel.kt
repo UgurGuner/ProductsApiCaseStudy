@@ -9,17 +9,19 @@ import com.eugurguner.productsapicasestudy.domain.model.Product
 import com.eugurguner.productsapicasestudy.domain.useCase.ProductUseCases
 import com.eugurguner.productsapicasestudy.domain.useCase.cart.CartProductUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class HomeFragmentViewModel @Inject constructor(
     private val productUseCases: ProductUseCases,
-    private val cartProductUseCases: CartProductUseCases
+    private val cartProductUseCases: CartProductUseCases,
+    @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState<List<Product>>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -43,7 +45,7 @@ class HomeFragmentViewModel @Inject constructor(
         if (isLoading || !hasMore) return
 
         isLoading = true
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             try {
                 val response =
                     productUseCases.fetchProductsUseCase.invoke(
@@ -71,7 +73,7 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     fun saveOrRemoveProduct(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             if (!product.isSaved) {
                 productUseCases.removeProductUseCase.invoke(productId = product.id)
             } else {
@@ -82,7 +84,7 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     fun addProductToCart(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcher) {
             cartProductUseCases.addProductToCartUseCase.invoke(product = product)
             _appEvents.update { AppEvents.OnCartBadgeUpdate }
         }

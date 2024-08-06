@@ -14,5 +14,5 @@ data class Product(
     val brand: String,
     val createdAt: String,
     var isSaved: Boolean = false,
-    var quantitiy: Int = 1
+    var quantity: Int = 1
 ) : Parcelable

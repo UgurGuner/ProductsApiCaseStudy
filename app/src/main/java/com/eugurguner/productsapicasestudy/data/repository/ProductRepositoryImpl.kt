@@ -40,12 +40,12 @@ class ProductRepositoryImpl(
     }
 
     override suspend fun increaseCartProductQuantity(product: Product) {
-        product.quantitiy += 1
+        product.quantity += 1
         cartDao.updateCartItemQuantity(product.toCartDTO())
     }
 
     override suspend fun decreaseCartProductQuantity(product: Product) {
-        product.quantitiy -= 1
+        product.quantity -= 1
         cartDao.updateCartItemQuantity(product.toCartDTO())
     }
 }

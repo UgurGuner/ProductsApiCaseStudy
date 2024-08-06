@@ -93,7 +93,14 @@ dependencies {
     implementation(libs.shimmer)
     implementation(libs.glide)
 
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.truthTest)
+    testImplementation("app.cash.turbine:turbine:1.1.0")
     testImplementation(libs.bundles.unitTesting)
+    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
 }
 
 ktlint {
